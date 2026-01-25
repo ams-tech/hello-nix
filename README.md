@@ -102,3 +102,13 @@ echo "Hello Nixers!"
 
 This emphasizes an importent concept in Nix: building & distributing this `hello-world` package is done at the `flake` project level.  We do not build & distribute `hello-world` binaries for multiple platforms.  Instead, we build & distribute a NixOS Package, and let each NixOS install manage how it acquires and/or builds the components of each package.
 
+#### Publishing our Flake
+
+Publishing your flake is as simple as pushing to a website like `github`.  
+
+You can run the project included in this repository with:
+
+`nix shell github:ams-tech/hello-nix?dir=hello-world -c hello`
+
+Note: Nix flakes typically aren't placed in subdirectories, but for the sake of this tutorial it's just easier this way.
+
