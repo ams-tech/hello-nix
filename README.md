@@ -1,10 +1,12 @@
 # hello-nixos-raspberrypi -- A sample NixOS project
 
-## Objective
+## Background
 
 [Nix](https://nix.dev/manual/nix/2.26/introduction) is a system-level package management tool.  This allows developers to construct reproducable systems using the [Nix Language](https://nix.dev/manual/nix/2.26/language/).
 
 [NixOS](https://nix.dev/manual/nix/2.26/introduction.html?highlight=nixos#nixos) is a distro-level implementation of Nix.  Using NixOS allows Nix projects to "own" the underlying system at the OS level.
+
+## Objective
 
 The goal of this project is to demo a simple "hello world" project on a SBC, like the RaspberryPi.  This will be broken down into a collection of sub-projects, with each subproject serving to teach about a new Nix principle.
 
