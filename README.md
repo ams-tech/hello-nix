@@ -114,3 +114,42 @@ You can run the project included in this repository with:
 
 Note: Nix flakes typically aren't placed in subdirectories, but for the sake of this tutorial it's just easier this way.
 
+### Sub-Project 2: Installing NixOS on a Raspberry Pi
+
+Now we'll prepare a system image to bootstrap our RPi with NixOS.  We're roughly following [an official tutorial](https://nix.dev/tutorials/nixos/installing-nixos-on-a-raspberry-pi.html).
+
+Since we're learning NixOS, lets use our NixOS instance to perform this operation.
+
+### Select a bootstrap image from `Hydra`
+
+[Hydra](https://nixos.wiki/wiki/Hydra) is a CD/CI tool used by and for NixOS.  We can use the "official" Hydra instance to select a [recent NixOS SD Card Image](https://hydra.nixos.org/job/nixos/unstable/nixos.sd_image.aarch64-linux)
+
+We don't want to get into cross compiling yet, so select a recently successful build job and copy the download link to the `.img.zst` file.
+
+### Starting a terminal with `nix shell`
+
+The `nix shell` spins up a fresh instance of a NixOS session.  We want a session in order to download our `.img` file and extract it from the `.zstd` archive.
+
+Execute the following:
+
+```
+nix-shell -p wget zstd
+```
+
+Once you're in the `nix-shell`, execute:
+
+```
+wget https://hydra.nixos.org/build/319858754/download/1/nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img.zst
+
+unzstd -d nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img.zst
+
+sudo dmesg --follow
+```
+
+Now plug in our SD card.  YOu should see the device name, e.g. `sda` or `mmc0`
+
+Write the image to the SD card:
+
+```
+sudo dd if=nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img of=/dev/sdX bs=4096 conv=fsync status=progress
+```
