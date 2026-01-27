@@ -116,40 +116,60 @@ Note: Nix flakes typically aren't placed in subdirectories, but for the sake of 
 
 ### Sub-Project 2: Installing NixOS on a Raspberry Pi
 
-Now we'll prepare a system image to bootstrap our RPi with NixOS.  We're roughly following [an official tutorial](https://nix.dev/tutorials/nixos/installing-nixos-on-a-raspberry-pi.html).
+Now we'll prepare a system image to bootstrap our RPi with NixOS.  We're on a Rpi5, so we will be using the [nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi) flake.
 
-Since we're learning NixOS, lets use our NixOS instance to perform this operation.
+#### Set Up Cross Compilation
 
-### Select a bootstrap image from `Hydra`
+Assuming you're on an x86_64 system, you'll need to set up a cross compiler for arm's `aarc64` toolchain.
 
-[Hydra](https://nixos.wiki/wiki/Hydra) is a CD/CI tool used by and for NixOS.  We can use the "official" Hydra instance to select a [recent NixOS SD Card Image](https://hydra.nixos.org/job/nixos/unstable/nixos.sd_image.aarch64-linux)
+Typically, this is done by setting up a cross-compilation toolchain; however, NixOS community workflows seem to favor compiling in emulated environments (or, at least, this was the first functional solution I found).
 
-We don't want to get into cross compiling yet, so select a recently successful build job and copy the download link to the `.img.zst` file.
+Install the appropriate qemu and binfmt tools, and verify it's functional:
 
-### Starting a terminal with `nix shell`
+```bash
+sudo apt update
+sudo apt install -y qemu-user-static binfmt-support
 
-The `nix shell` spins up a fresh instance of a NixOS session.  We want a session in order to download our `.img` file and extract it from the `.zstd` archive.
-
-Execute the following:
-
-```
-nix-shell -p wget zstd
+ls /proc/sys/fs/binfmt_misc/ | grep -E 'qemu-aarch64|aarch64' || true
 ```
 
-Once you're in the `nix-shell`, execute:
+Now enable aarch64 emulation in the Nix daemon.  Edit `/etc/nix/nix.conf`:
 
 ```
-wget https://hydra.nixos.org/build/319858754/download/1/nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img.zst
+experimental-features = nix-command flakes
 
-unzstd -d nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img.zst
+# allow building ARM derivations on this x86_64 host
+extra-platforms = aarch64-linux
 
-sudo dmesg --follow
+# make qemu-aarch64-static available inside Nix build sandboxes
+extra-sandbox-paths = /usr/bin/qemu-aarch64-static
 ```
 
-Now plug in our SD card.  YOu should see the device name, e.g. `sda` or `mmc0`
+And restart the daemon: `sudo systemctl restart nix-daemon`
 
-Write the image to the SD card:
+#### Build the Installer Image
 
+Now you can build the installer image from the [nixos-raspberrypi project](https://github.com/nvmd/nixos-raspberrypi):
+
+`nix build github:nvmd/nixos-raspberrypi#installerImages.rpi5`
+
+This will be slow if you're using an emulated environment; even slower than typical yocto builds.
+
+The build process is pretty quiet, but when successful, it will generate a file called `result` -- this is a symlink to the installer image.
+
+Burn the image to your boot media (typically an SD card):
+
+```bash
+ls -R result
+
+# if you find a .img.zst:
+zstd -d result/**/*.img.zst -o nixos-rpi5.img
+
+# write to SD/USB (DOUBLE-CHECK /dev/sdX):
+sudo dd if=nixos-rpi5.img of=/dev/sdX bs=4M conv=fsync status=progress
 ```
-sudo dd if=nixos-image-sd-card-26.05pre933481.c5296fdd05cf-aarch64-linux.img of=/dev/sdX bs=4096 conv=fsync status=progress
-```
+
+Boot the image on your RPi with a monitor plugged in; it will set up a root SSH account with randomly generated credentials 
+
+TODO: Add picture
+
