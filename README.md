@@ -173,3 +173,7 @@ Boot the image on your RPi with a monitor plugged in; it will set up a root SSH 
 
 TODO: Add picture
 
+### Sub-Project 3: Provision your new system
+
+* Copy `provision-rpi5/flake.nix` to your raspberry pi 
+* Run `nixos-rebuild switch --flake .#hello-nix-rpi5`
