@@ -175,5 +175,15 @@ TODO: Add picture
 
 ### Sub-Project 3: Provision your new system
 
+TODO: Write instructions for the provisioning script.
+
 * Copy `provision-rpi5/flake.nix` to your raspberry pi 
-* Run `nixos-rebuild switch --flake .#hello-nix-rpi5`
+* Run `sudo nixos-rebuild switch --flake .#hello-nix-rpi5`
+
+After this step, you should be able to SSH in to the machine using your private key as credentials.
+
+### Circling Back to Sub-Project 1: Run our flake on the RPi
+
+If all things have gone well, you should be able to run our "hello world" project from Step 1 using the same command:
+
+`nix shell github:ams-tech/hello-nix?dir=hello-world -c hello`

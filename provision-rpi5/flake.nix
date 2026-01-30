@@ -26,7 +26,13 @@
                 raspberry-pi-5.bluetooth
               ];
             })
-
+            ({ ... }: {
+              nix = {
+                settings = {
+                  experimental-features = [ "nix-command" "flakes" ];
+                };
+              };
+            })
             ({ ... }: {
               networking.hostName = "hello-nix-rpi5";
               
