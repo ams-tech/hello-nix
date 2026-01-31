@@ -28,7 +28,7 @@ Restart your shell, then execute `nix flake --help` to verify the install.
 
 #### What are Flakes, and how do I make one?
 
-A [Nix Flake](https://wiki.nixos.org/wiki/Flakes) is the standard structure for a Nix project.  It allows developers to create a project in a manner that automates the distrebution of external dependencies, and publish your own project in a manner that can be used by other Nix Flakes.
+A [Nix Flake](https://wiki.nixos.org/wiki/Flakes) is the standard structure for a Nix project.  It allows developers to create a project in a manner that automates the distribution of external dependencies, and publish your own project in a manner that can be used by other Nix Flakes.
 
 When creating a Flake, it is helpful to start with a template; thankfully Nix has several built-in project templates.  Run `nix flake show templates` and you'll see what's available on your system:
 
@@ -175,7 +175,9 @@ TODO: Add picture
 
 ### Sub-Project 3: Provision your new system
 
-TODO: Write instructions for the provisioning script.
+Now we'll set up our own customized version of the system.  We'll be using the `provision-rpi5/flake.nix` file.  I've commented that file with details, but we'll cover some high level stuff below:
+
+#### 
 
 * Copy `provision-rpi5/flake.nix` to your raspberry pi 
 * Run `sudo nixos-rebuild switch --flake .#hello-nix-rpi5`
@@ -186,4 +188,14 @@ After this step, you should be able to SSH in to the machine using your private 
 
 If all things have gone well, you should be able to run our "hello world" project from Step 1 using the same command:
 
-`nix shell github:ams-tech/hello-nix?dir=hello-world -c hello`
+```bash
+nix shell github:ams-tech/hello-nix?dir=hello-world -c hello
+
+# Result:
+# Hello Nixers!
+```
+
+And, as simple as that, we have composed a Raspberrry Pi system image with the capability of debugging & deploying our application.  By conforming to the Nix Flakes community standards, we can debug and deploy our application on any system running NixOS, regardless of architecture or other configurations running on the system.
+
+No glue code, no bespoke workflows.  Just Nix Flakes.
+
