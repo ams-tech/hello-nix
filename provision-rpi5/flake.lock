@@ -36,11 +36,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1771196026,
-        "narHash": "sha256-ZT0o42kITcMVQfm1R5rgrBygJDB0g7SYcMs6EuXEHL8=",
+        "lastModified": 1771197331,
+        "narHash": "sha256-kYPIxhCH6oIdhKBxJyjqfa3S+2iqOnlE86dqF0G3YLE=",
         "owner": "ams-tech",
         "repo": "kaiba-network",
-        "rev": "5d62e9eeac355edf5edc579634e88b9a82ebee3a",
+        "rev": "0cd70fe2672cf2caa7811247049138ddf0ccb90b",
         "type": "github"
       },
       "original": {

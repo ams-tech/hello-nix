@@ -12,7 +12,6 @@
         hello-nix-rpi5 = nixos-raspberrypi.lib.nixosSystem {
           specialArgs = inputs;
           modules = [
-
             ({...}: {
               imports = with nixos-raspberrypi.nixosModules; [
                 raspberry-pi-5.base
