@@ -4,11 +4,11 @@
 
 [Nix](https://nix.dev/manual/nix/2.26/introduction) is a system-level package management tool.  This allows developers to construct reproducable systems using the [Nix Language](https://nix.dev/manual/nix/2.26/language/).
 
-[NixOS](https://nix.dev/manual/nix/2.26/introduction.html?highlight=nixos#nixos) is a distro-level implementation of Nix.  Using NixOS allows Nix projects to "own" the underlying system at the OS level.
+[NixOS](https://nix.dev/manual/nix/2.26/introduction.html?highlight=nixos#nixos) is a distro-level implementation of Nix.  Using NixOS allows Nix projects to "own" the underlying system at the OS level.  In our project, this will take the form of a sandboxed `NixOS` install on an Ubuntu machine and configuring a Raspberry Pi 5 to boot into `NixOS`.
 
 ## Objective
 
-The goal of this project is to demo a simple "hello world" project on a SBC, like the RaspberryPi.  This will be broken down into a collection of sub-projects, with each subproject serving to teach about a new Nix principle.
+The goal of this project is to demo a simple "hello world" project on a SBC, specifically the Raspberry Pi 5.  This will be broken down into a collection of sub-projects, with each subproject describing a new interface into the Nix ecosystem.
 
 ## Sub-Projects
 
@@ -180,7 +180,7 @@ Now we'll set up our own customized version of the system.  We'll be using the `
 #### 
 
 * Copy `provision-rpi5/flake.nix` to your raspberry pi 
-* Run `sudo nixos-rebuild switch --flake .#hello-nix-rpi5`
+* Run `sudo nixos-rebuild switch --flake github:ams-tech/hello-nix#hello-nix-rpi5`
 
 After this step, you should be able to SSH in to the machine using your private key as credentials.
 
@@ -196,6 +196,4 @@ nix shell github:ams-tech/hello-nix?dir=hello-world -c hello
 ```
 
 And, as simple as that, we have composed a Raspberrry Pi system image with the capability of debugging & deploying our application.  By conforming to the Nix Flakes community standards, we can debug and deploy our application on any system running NixOS, regardless of architecture or other configurations running on the system.
-
-No glue code, no bespoke workflows.  Just Nix Flakes.
 

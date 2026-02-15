@@ -17,6 +17,19 @@
                 raspberry-pi-5.bluetooth
               ];
             })
+            ({...}: {
+              services.nginx = {
+                enable = true;
+                virtualHosts.localhost = {
+                  locations."/" = {
+                    return = "200 '<html><body>It works</body></html>'";
+                    extraConfig = ''
+                      default_type text/html;
+                    '';
+                  };
+                };
+              };
+            })
             ({ ... }: {
               nix = {
                 settings = {
@@ -28,7 +41,6 @@
               networking.hostName = "hello-nix-rpi5";
               
               users.users.adam = {
-                initialPassword = "Some-hardcoded-password";
                 isNormalUser = true;
                 extraGroups = [
                   "wheel"
@@ -37,6 +49,7 @@
                   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMjtOqSWLDq79t/9XljmBrfBVm8deQJdOQmTV7c45Ni adam" # content of authorized_keys file
                 ];
               };
+              security.sudo.wheelNeedsPassword = false;
               services.openssh.enable = true;
               services.avahi = {
                 enable = true;
