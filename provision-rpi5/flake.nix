@@ -3,32 +3,23 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
+    kaiba-network.url = "github:ams-tech/kaiba-network/main";
   };
 
-  outputs = { self, nixpkgs, nixos-raspberrypi }@inputs:
+  outputs = { self, nixpkgs, nixos-raspberrypi, kaiba-network }@inputs:
     {
       nixosConfigurations = {
         hello-nix-rpi5 = nixos-raspberrypi.lib.nixosSystem {
           specialArgs = inputs;
           modules = [
+
             ({...}: {
               imports = with nixos-raspberrypi.nixosModules; [
                 raspberry-pi-5.base
                 raspberry-pi-5.bluetooth
+                kaiba-network.nixosModules.web
               ];
-            })
-            ({...}: {
-              services.nginx = {
-                enable = true;
-                virtualHosts.localhost = {
-                  locations."/" = {
-                    return = "200 '<html><body>It works</body></html>'";
-                    extraConfig = ''
-                      default_type text/html;
-                    '';
-                  };
-                };
-              };
+              boot.loader.raspberry-pi.bootloader = "kernel";
             })
             ({ ... }: {
               nix = {
@@ -53,7 +44,7 @@
               services.openssh.enable = true;
               services.avahi = {
                 enable = true;
-                nssmdns = true;
+                nssmdns4 = true;
               };
             })
             ({ ... }: {
